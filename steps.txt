@@ -1,0 +1,91 @@
+After installation:
+Log as root with either:
+$ su root
+OR
+$ su -
+
+Install sudo:
+$ apt update
+$ apt upgrade
+$ apt install sudo
+
+Add existing user to sudo:
+$ sudo usermod -aG sudo <user>
+OR
+$ sudo adduser <username> sudo
+
+Create a group <user42> and add the existing user to it:
+$ sudo groupadd user42
+
+$ sudo usermod -aG user 42 <username>
+OR
+$ sudo adduser <username> user42
+
+Display members of group:
+getent group <group>
+
+Create a directory to save logs of all sudo inputs and outputs:
+$ sudo mkdir /var/log/sudo 
+
+The /etc/sudoers file is used to allocate system rights to system users. This allows the administrator to control who does what.
+NOTE: We use 'visudo' to edit the sudoers file as it is safer than 'vi'.
+It locks the sudoers file against multiple simultaneous edits and it will check for syntax errors.
+
+Add this line to sudoers file:
+<username>  ALL=(ALL:ALL) ALL
+
+This will give unlimited privileges to <username>.
+
+Add these defaults settings:
+Defaults	passwd_tries=3
+Defaults	badpass_message="Custom message in case of bad password"
+Defaults	logfile="/var/log/sudo/sudo.log"
+Defaults	log_input
+Defaults	log_output
+Defaults	requiretty
+
+'requiretty' provides an additional layer of security by ensuring that the user has an interactive TTY session before they can run a command with elevated privileges.
+This helps to prevent unauthorized users from running 'sudo' commands remotely or from scripts.
+
+Add this line to restrict the paths that can be used by 'sudo':
+Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+
+This means when a 'sudo' command will be run, the system will only look for the command in the specified directories (which are considered to be safe and not writeable by anyone except the root user). If the command is not located in any of these, the user will not be allowed to run it with elevated privileges.
+Without this line, regular users without elevated privileges would be able to place their own executables and wait for a user with sudo rights to accidentally execute it.
+
+Install and configure SSH
+
+$ sudo apt install openssh-server
+
+Configure the ssh file to listen for incoming connections on port 4242 instead of default port 22.
+
+$ sudo vi /etc/ssh/sshd_config
+
+Replace this line:
+
+#Port 22
+
+With:
+
+Port 4242
+
+Disable ssh login as root:
+
+Replace this line:
+#PermitRootLogin prohibit-password
+
+With:
+PermitRootLogin no
+
+Check SSH status with:
+
+$ sudo service ssh status
+
+OR
+
+$ systemctl status ssh
+
+Install and configure UFW
+
+sudo apt install ufw
+
