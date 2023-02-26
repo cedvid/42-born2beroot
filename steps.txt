@@ -204,6 +204,16 @@ Delete the new user:
 $ sudo deluser <username>
 
 
+BONUS
+
+Instal Lighttpd
+
+$ sudo apt install lighttpd
+
+Install MariaDB
+
+$ sudo apt install mariadb-server
+
 
 
 
