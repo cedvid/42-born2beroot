@@ -1,3 +1,12 @@
+Install notes:
+Primary and logical?
+2nd partition do not mount it, why?
+-Create volume group
+-Create logical volume
+- each partition use as ext4 except for swap (area) and mount point for var/log enter manually, why
+- GRUB boot loader?
+
+
 After installation:
 Log as root with either:
 $ su root
@@ -8,6 +17,7 @@ Install sudo:
 $ apt update
 $ apt upgrade
 $ apt install sudo
+$ dpkg -l | grep sudo -> check if install is successful
 
 Add existing user to sudo:
 $ sudo usermod -aG sudo <user>
@@ -27,14 +37,16 @@ getent group <group>
 Create a directory to save logs of all sudo inputs and outputs:
 $ sudo mkdir /var/log/sudo 
 
-The /etc/sudoers file is used to allocate system rights to system users. This allows the administrator to control who does what.
+The /etc/sudoers file is used to allocate system rights to system users. 
+This allows the administrator to control who does what.
 NOTE: We use 'visudo' to edit the sudoers file as it is safer than 'vi'.
 It locks the sudoers file against multiple simultaneous edits and it will check for syntax errors.
 
 Add this line to sudoers file:
 <username>  ALL=(ALL:ALL) ALL
 
-This will give unlimited privileges to <username>.
+Note: the file already contains this line for root.
+This will give unlimited privileges to <username> as well.
 
 Add these defaults settings:
 Defaults	passwd_tries=3
@@ -49,6 +61,8 @@ This helps to prevent unauthorized users from running 'sudo' commands remotely o
 
 Add this line to restrict the paths that can be used by 'sudo':
 Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+
+Note: I add to addd snap/bin
 
 This means when a 'sudo' command will be run, the system will only look for the command in the specified directories (which are considered to be safe and not writeable by anyone except the root user). If the command is not located in any of these, the user will not be allowed to run it with elevated privileges.
 Without this line, regular users without elevated privileges would be able to place their own executables and wait for a user with sudo rights to accidentally execute it.
@@ -77,15 +91,171 @@ Replace this line:
 With:
 PermitRootLogin no
 
-Check SSH status with:
+Restart SSH then check status with:
+
+$ systemctl restart ssh
 
 $ sudo service ssh status
-
 OR
-
 $ systemctl status ssh
 
-Install and configure UFW
+You should now see that SSH is active and listening to port 4242
 
-sudo apt install ufw
+Install and configure UFW
+$ sudo apt install ufw
+
+Enable UFW:
+$ sudo ufw enable
+
+Allow port 4242
+$ sudo ufw allow 4242
+
+Check status with:
+$ sudo ufw status
+
+It should show the following:
+
+To		Action	From
+--		------	----
+4242		ALLOW	Anywhere
+4242(v6)	ALLOW	Anywhere (v6)
+
+Exit the virtual machine and go to VirtualBox software. Click on your Virtual Machine -> Settings -> Network -> Adapter 1 -> Advanced -> Port Forwarding -> Set Host Port to 2222 and Guest Port to 4242
+
+NOTE: Why PORT 2222?
+
+Boot your VM and restart SSH. Open a terminal on your real system, you should now be able to connect to your VM via SSH with this command:
+
+$ ssh <username>@localhost -p 4242
+
+Strong password policy:
+
+The /etc/login.defs file provides defaults configuration information for several user account parameters including password aging controls.
+
+Edit /etc/login.defs as follows:
+
+$ sudo nano /etc/login.defs
+
+// Maximum number of days a password may be used.
+PASS_MAX_DAYS   30   
+// Minimum number of days allowed between password changes.
+PASS_MIN_DAYS   2 
+// Number of days warning given before a password expires.
+PASS_WARN_AGE   7
+
+After saving, you will have to manually apply the changes to existing users (including root):
+
+$ sudo chage -M 30 <username>
+$ sudo chage -m 2 <username>
+$ sudo chage -W 7 <username>
+
+Display password aging information with:
+
+$ sudo chage -l <username>
+
+You should see something like this:
+
+Last password change					: Feb 26, 2023
+Password expires					: Mar 28, 2023
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 2
+Maximum number of days between password change		: 30
+Number of days of warning before password expires	: 7
+
+Next, install the package libpam-pwquality:
+
+$ sudo apt install libpam-pwquality
+
+"libpwquality's purpose is to provide common functions for password quality checking" (debian.org)
+
+Edit /etc/pam.d/common-password:
+
+$ sudo nano /etc/pam.d/common-password
+
+Find this line:
+
+password requisite pam_pwquality.so retry=3
+
+And add the following:
+
+minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+
+Which respectively stand for:
+- Minimun length of 10 characters
+- At least one lowercase character
+- At least one uppercase character
+- At least one digit
+- No more than 3 consecutive identical characters
+- Cannot contain the username
+- Must contain at least 7 characters that are not part of the former password
+- All rules apply to root
+
+You can add a new user to test the password requirements:
+
+$ sudo adduser <username>
+
+Type a weak password, it should return:
+
+"BAD PASSWORD: <requirements>"
+
+Delete the new user:
+
+$ sudo deluser <username>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
