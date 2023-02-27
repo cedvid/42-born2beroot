@@ -215,7 +215,10 @@ Install MariaDB
 $ sudo apt install mariadb-server
 
 
+HOSTNAME CHANGE:
 
+$ sudo hostnamectl set-hostname <new_hostname>
+$ hostnamectl status
 
 
 
