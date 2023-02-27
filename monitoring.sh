@@ -14,7 +14,8 @@ LASTBOOT=$(who -b | awk '{print $4, $3}')
 LVM=$()
 NBRCON=$()
 NBRUSER=$(who | wc -l)
-IPVMAC=$()
+IP=$(hostname -I)
+MAC=$(ip link | grep ether | awk '{print $2}')
 NBRSUDO=$(grep COMMAND /var/log/sudo/sudo.log | wc -l)
 
 wall "
@@ -29,7 +30,7 @@ wall "
 #LVM use: $LVM
 #Connections TCP:$NBRCON
 #User log: $NBRUSER
-#Network: $IPVMAC
+#Network: IP $IP($MAC)
 #Sudo: $NBRSUDO commands
 ----------------------------------------------------------------------------
 "
