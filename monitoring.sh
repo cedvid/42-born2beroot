@@ -1,3 +1,4 @@
+  GNU nano 5.4                             monitoring.sh                                       
 #!/bin/bash
 
 ARC=$(uname -a)
@@ -11,8 +12,8 @@ TOTAL_DISK=$(df -h --total | grep total | awk '{print $2}')
 DISKPC=$(df --total | grep total | awk '{print $5}')
 PROCPC=$()
 LASTBOOT=$(who -b | awk '{print $4, $3}')
-LVM=$()
-NBRCON=$()
+LVM=$(if [ $(lsblk | grep lvm | wc -l) -eq 0 ]; then echo no; else echo yes; fi)
+NBRCON=$(grep TCP /proc/net/sockstat | awk '{print $3}')
 NBRUSER=$(who | wc -l)
 IP=$(hostname -I)
 MAC=$(ip link | grep ether | awk '{print $2}')
@@ -28,7 +29,7 @@ wall "
 #CPU load: $PROCPC
 #Last boot: $LASTBOOT 
 #LVM use: $LVM
-#Connections TCP:$NBRCON
+#Connections TCP: $NBRCON ESTABLISHED
 #User log: $NBRUSER
 #Network: IP $IP($MAC)
 #Sudo: $NBRSUDO commands
