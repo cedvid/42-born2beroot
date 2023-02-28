@@ -9,7 +9,7 @@ RAMPC=$(free | grep Mem | awk '{printf("%.1f"), $3 / $2 * 100}')
 USED_DISK=$(df -h --total | grep total | awk '{print $3}')
 TOTAL_DISK=$(df -h --total | grep total | awk '{print $2}')
 DISKPC=$(df --total | grep total | awk '{print $5}')
-PROCPC=$()
+PROCPC=$(top -bn1 | grep Cpu | awk '{print $2+$4}')
 LASTBOOT=$(who -b | awk '{print $4, $3}')
 LVM=$(if [ $(lsblk | grep lvm | wc -l) -eq 0 ]; then echo no; else echo yes; fi)
 NBRCON=$(grep TCP /proc/net/sockstat | awk '{print $3}')
@@ -25,7 +25,7 @@ wall "
 #vCPU: $VPROC
 #Memory Usage: $USED_RAM/$TOTAL_RAM($RAMPC%)
 #Disk Usage: $USED_DISK/$TOTAL_DISK ($DISKPC)
-#CPU load: $PROCPC
+#CPU load: $PROCPC%
 #Last boot: $LASTBOOT 
 #LVM use: $LVM
 #Connections TCP: $NBRCON ESTABLISHED

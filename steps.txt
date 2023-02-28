@@ -314,6 +314,14 @@ HOSTNAME CHANGE:
 $ sudo hostnamectl set-hostname <new_hostname>
 $ hostnamectl status
 
+Interrupt a service (you will be asked to interrupt cron during defense):
+
+$ sudo systemctl stop <service>
+//To check status:
+$ sudo systemctl status <service>
+//To restart the service
+$ sudo systemctl start <service>
+
 
 
 
