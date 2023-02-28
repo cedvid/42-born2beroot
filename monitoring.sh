@@ -1,4 +1,3 @@
-  GNU nano 5.4                             monitoring.sh                                       
 #!/bin/bash
 
 ARC=$(uname -a)
