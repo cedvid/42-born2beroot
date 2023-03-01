@@ -308,14 +308,57 @@ USEFUL FOR THE EVALUATION
 A virtual machine is a sofware emulation of a physical computer that can run its own operating system and applications, but it exists entirely within another host operating system.
 This allows you to run multiple operating systems isolated from each other on a single physical computer. It's particularly useful for testing softwares in a controlled environment.
 
+apt and aptitude:
+Both are package managers that allow the user to install, update and remove software packages. aptitude is built on top of apt and has more features. It also has a GUI.
+
+AppArmor and SELinux:
+Both are security modules that enforce security policies. AppArmor uses a profile-based approach, where each process is assigned a profile that defines its access permissions.
+SELinux uses a policy-based approach, where access is restricted based on the sensitivity of the data and the role of the user. 
+AppArmor is considered to be simpler to set up and manage.
+
+
+
 USEFUL COMMANDS:
 
-HOSTNAME CHANGE:
-$ sudo hostnamectl set-hostname <new_hostname>
+file paths:
+sudo settings:
+/etc/sudoers
+change port for ssh:
+/etc/ssh/sshd_config
+password policy:
+/etc/login.defs
+libpam pw policy:
+/etc/security/pwquality.conf
+
+Ufw commands:
+$ sudo ufw status
+$ sudo ufw allow <port>/<protocol>
+$ sudo ufw deny <port>/<protocol>
+$ sudo ufw delete <rule>    // e.g. sudo ufw delete allow 22/tcp
+$ sudo ufw status numbered
+$ sudo ufw delete <nbr>
+
+User/group related commands:
+Adding a new user: 
+sudo adduser <username>
+Deleting a user: 
+sudo deluser <username>
+sudo deluser --remove-home <username> // to remove home also
+Creating a new group: 
+sudo addgroup <groupname>
+Deleting a group: 
+sudo delgroup <groupname>
+Adding a user to a group: 
+sudo adduser <username> <groupname>
+Changing the password of a user: 
+sudo passwd <username>
+Seeing the details of password age: 
+sudo chage -l <username>
+Changing the hostname: 
+sudo hostnamectl set-hostname <new_hostname>
 $ hostnamectl status
 
 Interrupt a service (you will be asked to interrupt cron during defense):
-
 $ sudo systemctl stop <service>
 //To check status:
 $ sudo systemctl status <service>
