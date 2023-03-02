@@ -1,7 +1,23 @@
-# BORN2BEROOT
+# Born2beroot project
 This is a 42 school project. The goal is to explore the basics of system administration by creating a virtual machine and installing and configuring a Debian server from scratch. Through this project, I gained essential knowledge about virtualization, operating systems, disk partitioning (with LVM), tools such as SSH (for remote access to the server), UFW (for firewall management), cron (for system scheduled tasks) and I was able to deepen my understanding of bash scripting and my overall proficiency with command lines.
 
-## MANDATORY PART: STEP-BY-STEP GUIDE
+Grade:
+
+![grade](https://github.com/cedvid/born2beroot/blob/main/img/grade.png?raw=true)
+
+## STEP BY STEP: THE MANDATORY PART
+
+**Table of contents**  
+- [Installation](#installation)  
+- [Configuration of the server](#configuration-of-the-server)
+  - [SUDO](#install-and-config-of-sudo)
+  - [SSH](#install-and-config-of-ssh)
+  - [UFW](#install-and-config-of-ufw)
+  - [Password policy](#strong-password-policy)  
+- [Bonus](#bonus-part)
+  - [First bonus](#first-bonus)
+  - [Second bonus](#second-bonus)
+- [Useful for the evaluation](#useful-for-the-evaluation)  
 
 Disclaimer: My only goal is to document the steps I took in order to complete the project. If you are a 42 student, make sure you do your own research and understand what you do. You will be asked many questions during the evaluation and you need to be confident navigating around your server.
 
@@ -381,7 +397,7 @@ Finally, connect to http://localhost:8080 and follow the WordPress instructions.
 
 ### SECOND BONUS:
 
-For the second bonus, I decided to install 'cockpit' as an additional service.
+For the second bonus, I decided to install Cockpit as an additional service.
 It's a remote server management software with a simple web-based interface.
 
 The installation is very straightforward, here's what the official website recommends:
